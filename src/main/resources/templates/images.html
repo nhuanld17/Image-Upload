@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+
+    <style>
+        .table th, .table td {
+            text-align: center; /* Căn giữa tất cả các ô trong bảng */
+            vertical-align: middle; /* Căn giữa nội dung theo chiều dọc */
+        }
+
+        .table td img {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .table td {
+            max-width: 150px; /* Giới hạn chiều rộng cột */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Hiển thị dấu ... nếu văn bản quá dài */
+            white-space: nowrap; /* Không xuống dòng */
+        }
+
+        .table td a {
+            display: block;
+            max-width: 100px; /* Giới hạn chiều rộng của các liên kết */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+
+</head>
+<body>
+    <!--header-->
+    <div th:replace="fragments/header.html::header"></div>
+
+    <div class="container-fluid" style="max-width: 600px; margin: 0 auto;">
+        <h2 class="text-center">List of images</h2>
+
+        <div th:if="${imageList.size() > 0}">
+            <table class="table table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Images</th>
+                        <th scope="col">File name</th>
+                        <th scope="col">Link</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="image : ${imageList}">
+                        <td> <img th:src="@{${image.getUrl()}}" alt="${image.name}" style="height: 60px;"/></td>
+                        <td th:text="${image.getFileName()}"></td>
+                        <td><a th:href="@{${image.getUrl()}}">Download</a></td>
+                        <td>
+                            <a th:href="@{'/images/delete/' + ${image.getFileName()}}" th:fileName="${image.getFileName()}" id="btnDelete"
+                            title="Delete this image" class="fa-regular fa-trash-can icon-dark btn-delete"></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:unless="${imageList.size() > 0}">
+            <span>No files found!</span>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="confirmModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Confirmation</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <span id="confirmText"></span>
+                </div>
+
+                <div class="modal-footer">
+                    <a type="button" id="yesBtn" class="btn btn-danger">Yes</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--footer-->
+    <div th:replace="fragments/footer.html::footer"></div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnDelete").on("click", function (e) {
+                e.preventDefault();
+                const link = $(this);
+
+                const fileName = link.attr("fileName");
+                $("#yesBtn").attr("href", link.attr("href"));
+                $("#confirmText").html("Do you want to delete the File: \<strong\>" + fileName + "\<\/strong\>?");
+                $("#confirmModal").modal();
+            });
+        });
+    </script>
+
+<!-- Optional JavaScript -->
+
+</body>
+</html>
