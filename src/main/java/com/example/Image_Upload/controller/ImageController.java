@@ -69,7 +69,7 @@ public class ImageController {
 		String message = "";
 		
 		try {
-			if (file.isEmpty() || file == null) {
+			if (file.isEmpty()) {
 				message = "File is empty";
 				redirectAttributes.addFlashAttribute("message", message);
 				return "redirect:/images/new";
