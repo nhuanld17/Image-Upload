@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Controller
@@ -51,7 +53,7 @@ public class ImageController {
 		
 		return ResponseEntity.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""
-				+ file.getFilename()+"\"")
+				+ URLEncoder.encode(file.getFilename(), StandardCharsets.UTF_8) + "\"")
 				.body(file);
 	}
 	
