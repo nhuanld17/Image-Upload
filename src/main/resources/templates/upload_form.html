@@ -19,11 +19,13 @@
         <h3 class="mb-3">Spring Boot Image Upload Example</h3>
 
         <form th:action="@{/images/upload}" id="uploadForm" method="post" enctype="multipart/form-data">
-            <input id="input-file" type="file" name="file" accept="image/png, image/jpeg">
+            <input id="input-file" type="file" name="file" accept="image/*">
             <button class="btn btn-sm btn-outline-success float-right" type="submit">
                 Upload
             </button>
         </form>
+
+        <div id="uploadedImages" class="mb-3"></div>
 
         <div th:if="${message != null}"
                 class="alert alert-secondary alert-dismissible fade show text-center message mt-3"
@@ -37,6 +39,28 @@
 
     <!--Footer-->
     <div th:replace="fragments/footer.html::footer"></div>
+
+    <script>
+        document.getElementById("input-file").addEventListener("change", function (event) {
+            const files = event.target.files;
+            const uploadedImageDiv = document.getElementById("uploadedImages");
+            uploadedImageDiv.innerHTML = ''; // Clear previous images
+
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith("image/")){
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const imgElement = document.createElement("img");
+                        imgElement.src = e.target.result;
+                        imgElement.style.maxWidth = "100%";
+                        imgElement.style.marginTop = "10px";
+                        uploadedImageDiv.appendChild(imgElement);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            })
+        })
+    </script>
 
 </body>
 </html>
